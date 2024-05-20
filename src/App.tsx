@@ -20,7 +20,7 @@ function LifeGameBoard() {
   // useStates
 
   // setting: type of board - empty or random
-  const [type, setType] = useState<string>("clear");
+  const [type, setType] = useState<string>("random");
 
   // setting: size of board
   const [board, setBoard] = useState<number[][]>(newGrid(initialSize, initialSize, type));
@@ -208,18 +208,15 @@ function LifeGameBoard() {
 
         <div className='runGame'>
           <button onClick={() => {
-            setBoardShadow("0px 0px 5px 3px rgba(0,0,255,.3)");
-            setGameRunning(true);
+            setGameRunning(gameRunning ? false : true);
+            setBoardShadow(gameRunning ? "0px 0px 5px 3px rgba(255,160,122,.3)" : "0px 0px 5px 3px rgba(0,0,255,.3)");
           }}>
-            <i className="bi bi-play-fill"></i> Run
+            {gameRunning
+            ? <><i className="bi bi-pause-fill"></i> Pause</>
+            : <><i className="bi bi-play-fill"></i> Run</>
+            }
           </button>
           <span>Iterations: {iteration}</span>
-          <button onClick={() => {
-            setBoardShadow("0px 0px 5px 3px rgba(255,160,122,.3)")
-            setGameRunning(false);
-          }}>
-            <i className="bi bi-pause-fill"></i> Pause
-          </button>
         </div>
       </div>
 
