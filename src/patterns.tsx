@@ -16,6 +16,8 @@ export const birdPattern = (rows: number, columns: number) => {
     return birdPattern;
 }
 
+export const birdInfo = <>The <a href="https://conwaylife.com/wiki/Middleweight_spaceship" target="_blank">middleweight spaceship</a> was found by John Conway himself in 1970</>;
+
 export const smallPattern = (rows: number, columns: number) => {
     const smallPattern = [...Array(columns)].map(() => [...Array(rows)].map(() => 0));
     smallPattern[22][24] = 1;
@@ -34,6 +36,8 @@ export const smallPattern = (rows: number, columns: number) => {
     smallPattern[28][26] = 1;
     return smallPattern;
 }
+
+export const smallInfo = undefined;
 
 export const loopPattern = (rows: number, columns: number) => {
     const loopPattern = [...Array(columns)].map(() => [...Array(rows)].map(() => 0));
@@ -94,3 +98,5 @@ export const loopPattern = (rows: number, columns: number) => {
     loopPattern[31][29] = 1;
     return loopPattern;
 }
+
+export const loopInfo = <><a href="https://conwaylife.com/wiki/Pulsar" target="_blank">Pulsar</a> is an oscillating pattern found by John Conway in 1970</>;

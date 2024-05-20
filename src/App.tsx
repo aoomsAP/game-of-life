@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
-import { birdPattern, smallPattern, loopPattern } from "./patterns.tsx";
+import { birdPattern, birdInfo, smallPattern, smallInfo, loopPattern, loopInfo } from "./patterns.tsx";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function LifeGameBoard() {
 
@@ -19,10 +20,10 @@ function LifeGameBoard() {
   // useStates
 
   // setting: type of board - empty or random
-  const [type, setType] = useState<string>("clear"); 
+  const [type, setType] = useState<string>("clear");
 
   // setting: size of board
-  const [board, setBoard] = useState<number[][]>(newGrid(initialSize, initialSize, type)); 
+  const [board, setBoard] = useState<number[][]>(newGrid(initialSize, initialSize, type));
 
   // setting: tempo of interval
   const [tempo, setTempo] = useState<number>(initialTempo);
@@ -31,13 +32,16 @@ function LifeGameBoard() {
   const [iteration, setIteration] = useState<number>(0);
 
   // setting: run & pause game
-  const [gameRunning, setGameRunning] = useState<boolean>(false); 
+  const [gameRunning, setGameRunning] = useState<boolean>(false);
 
   // shadow color to indicate game is running/paused - possible without state?
   const [boardShadow, setBoardShadow] = useState<string>(initialBoardShadow);
 
   // setting: alive/dead when dragging cursor over board
   const [boardPaint, setBoardPaint] = useState<string>("alive");
+
+  // info about pattern that has been selected
+  const [patternInfo, setPatternInfo] = useState<JSX.Element | undefined>(undefined);
 
   const identifyNeighbors = (board: number[][], rowIndex: number, columnIndex: number) => {
     return [
@@ -137,9 +141,9 @@ function LifeGameBoard() {
     <>
       <div className='settings'>
 
-      <div className='configurePaint'>
-          <p style={{fontStyle: "italic", marginTop: "0"}}>Click a cell to toggle from alive (black) to dead (white).</p>
-          <label style={{ margin: "1rem"}}>Paint by dragging over board:</label>
+        <div className='configurePaint'>
+          <p style={{ fontStyle: "italic", marginTop: "0" }}>Click a cell to toggle from alive (black) to dead (white).</p>
+          <label style={{ margin: "1rem" }}>Paint by dragging over board:</label>
           <input type="radio" value="alive" name='alive'
             checked={boardPaint === "alive"}
             onChange={e => setBoardPaint(e.target.value)} />Alive
@@ -149,19 +153,20 @@ function LifeGameBoard() {
         </div>
 
         <div className='configureBoard'>
-          <label style={{ margin: "1rem"}}>Board: </label>
+          <label style={{ margin: "1rem" }}>Board: </label>
           <input type="radio" name="clear"
             onChange={() => setType("clear")}
             checked={type === "clear"} />Clear
           <input type="radio" name="random" style={{ marginLeft: ".5rem" }}
             onChange={() => setType("random")}
             checked={type === "random"} />Random
-          <button type='submit'style={{ marginLeft: ".5rem" }}
+          <button type='submit' style={{ marginLeft: ".5rem" }}
             onClick={e => {
               e.preventDefault();
               console.log(type);
               restartSettings();
               setBoard(newGrid(board[0].length, board.length, type));
+              setPatternInfo(undefined);
             }
             }>Reset</button>
           <label htmlFor="patterns" style={{ marginLeft: "1rem" }}>Patterns:&nbsp;</label>
@@ -174,15 +179,15 @@ function LifeGameBoard() {
             restartSettings();
             const pattern = (document.getElementById("patterns") as HTMLSelectElement).value;
             switch (pattern) {
-              case "bird": setBoard(birdPattern(initialSize, initialSize)); setTempo(100); break;
-              case "small": setBoard(smallPattern(initialSize, initialSize)); break;
-              case "loop": setBoard(loopPattern(initialSize, initialSize)); break;
+              case "bird": setBoard(birdPattern(initialSize, initialSize)); setPatternInfo(birdInfo); setTempo(100); break;
+              case "small": setBoard(smallPattern(initialSize, initialSize)); setPatternInfo(smallInfo); break;
+              case "loop": setBoard(loopPattern(initialSize, initialSize)); setPatternInfo(loopInfo); break;
             }
           }}>Set</button>
         </div>
 
         <div className='configureSize'>
-          <label style={{ margin: "1rem"}}>Size:</label>
+          <label style={{ margin: "1rem" }}>Size:</label>
           <input type="number" name="rows" id="rows" defaultValue={initialSize} size={6} />
           <input type="number" name="columns" id="columns" defaultValue={initialSize} size={6} />
           <button onClick={() => {
@@ -199,21 +204,21 @@ function LifeGameBoard() {
           </button>
         </div>
 
-        <hr style={{ border: "1px solid lightgrey",marginTop: "2rem" }} />
+        <hr style={{ border: "1px solid lightgrey", marginTop: "2rem" }} />
 
         <div className='runGame'>
           <button onClick={() => {
             setBoardShadow("0px 0px 5px 3px rgba(0,0,255,.3)");
             setGameRunning(true);
           }}>
-            Run
+            <i className="bi bi-play-fill"></i> Run
           </button>
           <span>Iterations: {iteration}</span>
           <button onClick={() => {
             setBoardShadow("0px 0px 5px 3px rgba(255,160,122,.3)")
             setGameRunning(false);
           }}>
-            Pause
+            <i className="bi bi-pause-fill"></i> Pause
           </button>
         </div>
       </div>
@@ -249,6 +254,12 @@ function LifeGameBoard() {
           </div>
         })}
       </div>
+
+      {patternInfo &&
+        <div style={{ margin: "1rem" }}>
+          {patternInfo}
+        </div >
+      }
     </>
   )
 }
